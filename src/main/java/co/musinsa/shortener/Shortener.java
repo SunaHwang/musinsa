@@ -2,6 +2,7 @@ package co.musinsa.shortener;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,6 +32,7 @@ public class Shortener {
 	@NotNull
 	private String originUrl;
 	
+	@Column(unique=true)
 	@NotNull
 	private String shortenUrl;
 
