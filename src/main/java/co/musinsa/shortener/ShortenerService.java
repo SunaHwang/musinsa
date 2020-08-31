@@ -14,7 +14,6 @@ import co.musinsa.log.Logs;
 public class ShortenerService {
 
 	private int KEY_MAX_LENGTH = 8; //key의 최대 길이.
-	private String LOCAL_HOST = "http://localhost/";
 	
 	@Autowired
 	private ShortenerRepository shortenerRepository;
@@ -46,7 +45,7 @@ public class ShortenerService {
 		} else { //없으면 새로 생성.
 			Shortener newShortener = new Shortener();
 			newShortener.setOriginUrl(originUrl);
-			newShortener.setShortenUrl(LOCAL_HOST + createKey(originUrl));
+			newShortener.setShortenUrl(createKey(originUrl));
 			
 			shortenerRepository.save(newShortener);
 			
@@ -154,7 +153,7 @@ public class ShortenerService {
 		if(shortener.getOriginUrl().length()>0) {
 			return shortener.getOriginUrl();
 		} else {
-			return "Expand Error!!";
+			return "Redirect Error!!";
 		}
 
 	}

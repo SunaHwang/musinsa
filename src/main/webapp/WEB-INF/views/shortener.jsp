@@ -68,7 +68,8 @@ function onShortening() { //shortening
     	data : JSON.stringify(data),
     	success : function(data){
     		if(data.status=="success") {
-        		$("#result").text(data.message);
+    			var url = location.href + data.message;
+    			result.innerHTML = "<a href='" + url +"'>" + url +"</a>";
     		} else {
     			alert("fail:" + data.message);
     		}
