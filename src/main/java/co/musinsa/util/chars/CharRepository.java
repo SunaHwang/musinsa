@@ -1,4 +1,4 @@
-package co.musinsa.chars;
+package co.musinsa.util.chars;
 
 import java.util.List;
 

@@ -6,11 +6,11 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import co.musinsa.chars.CharRepository;
 import co.musinsa.log.LogRepository;
 import co.musinsa.log.Logs;
 import co.musinsa.log.RedirectLogRepository;
 import co.musinsa.log.RedirectLogs;
+import co.musinsa.util.chars.CharRepository;
 
 @Service
 public class ShortenerService {
