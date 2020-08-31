@@ -1,8 +1,6 @@
 #!/bin/sh
 
 echo "===install util==="
-apt-get install openjdk-13-jre
-
 apt-get install openjdk-13-jdk
 
 sudo apt-get install git
