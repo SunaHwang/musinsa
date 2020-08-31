@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import co.musinsa.chars.CharRepository;
 import co.musinsa.log.LogRepository;
 import co.musinsa.log.Logs;
+import co.musinsa.log.RedirectLogRepository;
+import co.musinsa.log.RedirectLogs;
 
 @Service
 public class ShortenerService {
@@ -24,6 +26,8 @@ public class ShortenerService {
 	@Autowired
 	private CharRepository charRepository;
 
+	@Autowired
+	private RedirectLogRepository redirectLogRepository;
 	
 	/*
 	 * URL 줄이기.
@@ -149,11 +153,29 @@ public class ShortenerService {
 		}
 		*/
 		Shortener shortener = shortenerRepository.findByShortenUrl(shortenUrl).orElse(new Shortener());
+		Long cnt = 0L;
 		
 		if(shortener.getOriginUrl().length()>0) {
+			//redirect log 생성.
+			RedirectLogs redirectLog = 
+					redirectLogRepository.findByShortenUrl(shortenUrl).orElse(
+								new RedirectLogs()
+							);
+			if(redirectLog.getShortenUrl() == null) { //새로 만들어진 log일 경우, url 설정.
+				redirectLog.setShortenUrl(shortenUrl);
+			} else { //기존에 있을 경우, redirect된 수를 가져옴.
+				cnt = redirectLog.getCnt();
+			}
+			
+			//redirect 수 증가.
+			redirectLog.setCnt(++cnt);
+			
+			redirectLogRepository.save(redirectLog);
+			
+			//변환 전의 URL 반환.
 			return shortener.getOriginUrl();
 		} else {
-			return "Redirect Error!!";
+			return "Redirect Error!!"; //에러 출력.
 		}
 
 	}
