@@ -29,13 +29,15 @@ public class ShortenerService {
 	@Autowired
 	private RedirectLogRepository redirectLogRepository;
 	
-	/*
+	
+	/**
 	 * URL 줄이기.
-	 * param : 원래의 URL
-	 * return : 변환된 URL
+	 * @param originUrl 원래의 URL
+	 * @return  변환된 URL
 	 * =======================
 	 * URL 변환을 호출할 때마다 log 기록됨.
 	 * 기록된 log는 변환 전의 URL과, 로그 생성시간을 저장.
+	 * 목적 : url 변환을 얼마나 자주 했는지 파악.
 	 */
 	public String createShortenUrl(String originUrl) {
 		String resultUrl;
@@ -65,10 +67,10 @@ public class ShortenerService {
 	}
 	
 	
-	/*
+	/**
 	 * url의 http(또는 https) 와 마지막 / 제거.
-	 * param : 원래의 URL
-	 * return : 최적화된 URL (해당 값이 DB에 저장됨)
+	 * @param url 원래의 URL
+	 * @return 최적화된 URL (해당 값이 DB에 저장됨)
 	 */
 	private String optimizeUrl(String url) {
 		if(url.length() > 6) { // 'http://'가 글자수가 7이어서, 7자리 이상만 체크.
@@ -86,13 +88,14 @@ public class ShortenerService {
 		return url;
 	}
 	
-	/*
+	
+	/**
 	 * URL을 줄여주는 key 값 만들기.
-	 * param : 원래의 URL
+	 * @param originUrl 원래의 URL
 	 * 	원래의 URL 길이를 판단하여, key 길이를 다르게 생성.
 	 * 	(url이 4자 ~ 8자일경우, key도 url 길이에 맞게 생성.
 	 * 	8자 초과일 경우, 무조건 8자로 생성.)
-	 * return : 생성된 key
+	 * @return 생성된 key
 	 */
 	private String createKey(String originUrl) {
 		String key = "";
@@ -125,22 +128,27 @@ public class ShortenerService {
 		return key;
 	}
 	
-	/*
+	
+	/**
 	 * 입력된 URL이 변환한 URL인지 체크.
-	 * param : 변환된 URL
-	 * return : count 수
+	 * @param shortenUrl 변환된 URL
+	 * @return count 수
 	 */
 	public int getshortenUrlCnt(String shortenUrl) {
 		return shortenerRepository.countByShortenUrl(shortenUrl);
 	}
 	
 	
-	/*
-	 * 원래의 URL로 확장.
-	 * 	http://localhost/ 는 붙여지지 않는다고 가정. 
-	 * 	즉, AodQs09z과 같이 생성된 key 값만 들어왔을 때, 이를 판단하고 변환되었던 값이면 원래의 URL을 return. 
-	 * param : 변환된 URL (key값)
-	 * return : 원래의 URL (http:// 혹은 https:// 는 붙이지 않음. 저장하지 않았음.
+	/**
+	 * 원래의 URL로 redirect.
+	 *	http://localhost:8080/logAodQs09z과 같은 값이 주소창에 입력되면, 원래의 URL로 redirect.
+	 * @param shortenUrl 변환된 URL 
+	 * @return 원래의 URL로 redirect
+	 * ================
+	 * redirect log 생성. 변환된 URL을 log에 기록.
+	 * 처음 redirect된 경우, log를 생성하여 기록.
+	 * 기존에 있는 log일 경우, cnt 증가 및 업데이트 일시 변경.
+	 * 목적 : redirect된 URL이 얼마나 호출되는지 판단.
 	 */
 	public String getOriginUrl(String shortenUrl) {
 		/*
