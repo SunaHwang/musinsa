@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import co.musinsa.log.LogRepository;
@@ -39,6 +40,7 @@ public class ShortenerService {
 	 * 기록된 log는 변환 전의 URL과, 로그 생성시간을 저장.
 	 * 목적 : url 변환을 얼마나 자주 했는지 파악.
 	 */
+	@Cacheable(value="url", key="#originUrl")
 	public String createShortenUrl(String originUrl) {
 		String resultUrl;
 		
@@ -150,6 +152,7 @@ public class ShortenerService {
 	 * 기존에 있는 log일 경우, cnt 증가 및 업데이트 일시 변경.
 	 * 목적 : redirect된 URL이 얼마나 호출되는지 판단.
 	 */
+	@Cacheable(value="url", key="#shortenUrl")
 	public String getOriginUrl(String shortenUrl) {
 		/*
 		if(inUrl.getUrl().length() > 16) { // 'http://localhost/'가 글자수가 17이어서, 17자리 이상만 체크.
